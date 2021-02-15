@@ -1,4 +1,5 @@
 use std::io;
+use std::collections::HashMap;
 
 static mut day: i32 = 0;
 static mut meter: i32 = 0;
@@ -16,18 +17,24 @@ fn main() {
     io::stdin().read_line(&mut input).expect("input error");
     meter = input.trim().parse().expect("parsing error");
     input.clear();
-    print!("달팽이가 {}일동안 {}미터를 올라갈 수 있는 경우의 수는 {}가지 입니다.", day, meter, climb(0,0));
+    let mut cache: HashMap<(i32,i32),i32> = HashMap::new();
+    print!("달팽이가 {}일동안 {}미터를 올라갈 수 있는 경우의 수는 {}가지 입니다.", day, meter, climb(0,0,&mut cache));
   }
 }
 
 
 //달팽이가 days일 동안 climbed미터를 기어올라 왔을 때,
 //day일 전까지 meter미터를 올라갈 수 있는 경우의 수
-unsafe fn climb(days: i32, climbed: i32) -> i32 {
+unsafe fn climb(days: i32, climbed: i32, cache: &mut HashMap<(i32,i32),i32>) -> i32 {
   //기저 사례: day일이 지났을 때
   if days==day {
     if climbed>=meter {return 1;}
     else {return 0;}
   }
-  climb(days+1,climbed+1)+climb(days+1,climbed+2)
+  //memoization
+  let ret: i32 = match cache.get(&(days,climbed)){
+    Some(_) => 0,
+    None => climb(days+1,climbed+1,cache)+climb(days+1,climbed+2,cache)
+  };
+  *cache.entry((days,climbed)).or_insert(ret)
 }
