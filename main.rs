@@ -3,6 +3,8 @@ use std::io;
 static mut day: i32 = 0;
 static mut meter: i32 = 0;
 
+//달팽이가 우물벽을 타고 올라갈 때,
+//1미터 또는 2미터를 올라간다(50%). 
 fn main() {
   unsafe{
   let mut input: String = String::new();
@@ -20,8 +22,12 @@ fn main() {
 
 
 //달팽이가 days일 동안 climbed미터를 기어올라 왔을 때,
-//days일 전까지 meter미터를 올라갈 수 있는 경우의 수
-fn climb(days: i32, climbed: i32) -> i32 {
-  //TODO
-  0
+//day일 전까지 meter미터를 올라갈 수 있는 경우의 수
+unsafe fn climb(days: i32, climbed: i32) -> i32 {
+  //기저 사례: day일이 지났을 때
+  if days==day {
+    if climbed>=meter {return 1;}
+    else {return 0;}
+  }
+  climb(days+1,climbed+1)+climb(days+1,climbed+2)
 }
