@@ -18,7 +18,8 @@ fn main() {
     meter = input.trim().parse().expect("parsing error");
     input.clear();
     let mut cache: HashMap<(i32,i32),i32> = HashMap::new();
-    print!("달팽이가 {}일동안 {}미터를 올라갈 수 있는 경우의 수는 {}가지 입니다.", day, meter, climb(0,0,&mut cache));
+    let p: i32 = 2_i32.pow(day as u32);
+    print!("달팽이가 {}일동안 {}미터를 올라갈 수 있는 확률은 {}% 입니다.", day, meter, (climb(0,0,&mut cache) as f64/p as f64)*100.0);
   }
 }
 
@@ -34,7 +35,7 @@ unsafe fn climb(days: i32, climbed: i32, cache: &mut HashMap<(i32,i32),i32>) -> 
   //memoization
   let ret: i32 = match cache.get(&(days,climbed)){
     Some(_) => 0,
-    None => climb(days+1,climbed+1,cache)+climb(days+1,climbed+2,cache)
+    None => climb(days+1,climbed+1,cache)+climb(days+1,climbed+2,cache),
   };
   *cache.entry((days,climbed)).or_insert(ret)
 }
